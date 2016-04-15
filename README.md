@@ -4,7 +4,7 @@ getopt-c
 Overview
 -----
 
-getopt-c implements the C getopt() function for Node.getopt() provides a function for parse option.
+getopt-c implements the posix C getopt() function for Node.getopt() provides a function for parse option.
 
 Install the npm package in:
 
