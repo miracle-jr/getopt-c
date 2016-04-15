@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/miracle-jr/getopt-c.git"
+    "url": "git://github.com/miracle-jr/getopt-c.git"
   },
   "keywords": [
     "getopt",
