@@ -8,7 +8,7 @@ getopt-c implements the posix C getopt() function for Node.getopt() provides a f
 
 Install the npm package in:
 
-	$ npm install getopt()
+	$ npm install getopt-c
 
 Here's how to use:
 
