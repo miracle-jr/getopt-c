@@ -1,5 +1,5 @@
 
-function parser(optstring, argv) {
+function parser(optstring, argv, opts) {
   var ii;
   
   if (!(this instanceof parser))
@@ -15,12 +15,12 @@ function parser(optstring, argv) {
     this.optArgv[ii] = argv[ii];
   }
 
-  this.parserOptstr(optstring);
+  this.parserOptstr(optstring, opts);
 
   return this;
 }
 
-parser.prototype.parserOptstr = function(optstr) {
+parser.prototype.parserOptstr = function(optstr, opts) {
   var ii, chr, arg;
 
   ii = 0;
@@ -36,9 +36,22 @@ parser.prototype.parserOptstr = function(optstr) {
       ii++;
     }
 
-    this.options[chr] = arg;
+    this.options[chr] = {
+      has_arg: arg,
+      val: chr
+    };
 
     ii++;
+  }
+
+  if (opts !== undefined) {
+    for (var j = 0; j < opts.length; ++j) {
+      this.options[opts[j].name] = {
+	has_arg: opts[j].has_arg,
+	val: opts[j].val
+      };
+	
+    }
   }
   
 };
@@ -46,6 +59,7 @@ parser.prototype.parserOptstr = function(optstr) {
 parser.prototype.getoptind = function() {
   return this.optind;
 };
+
 
 parser.prototype.getopt = function() {
   if (this.optind >= this.optArgv.length) {
@@ -69,27 +83,59 @@ parser.prototype.getopt = function() {
   var ar;
 
   this.optind++;
-  if (this.options[chr]) {
+  if (this.options[chr].has_arg) {
     if (arg.length > 2) {
       ar = arg.slice(2);
       return {
-	option: chr,
+	option: this.options[chr].val,
 	arg: ar
       };
     }
     else {
       ar = this.optArgv[this.optind++];
       return {
-	option: chr,
+	option: this.options[chr].val,
 	arg: ar
       };
     }
   }
   else {
     return {
-      option: chr
+      option: this.options[chr].val
     };
   }
+};
+
+parser.prototype.getopt_long = function() {
+  if (this.optind >= this.optArgv.length) {
+    return (undefined);
+  }
+  var arg = this.optArgv[this.optind];
+
+  if (arg.length >= 2 && arg[0] === '-' && arg[1] === '-') {
+    var ar = arg.slice(2);
+    if (ar in this.options) {
+      this.optind++;
+      if (this.options[ar].has_arg) {
+	return {
+	  option: this.options[ar].val,
+	  arg: this.optArgv[this.optind++]
+	};
+      }
+      else {
+	return {
+	  option: this.options[ar].val
+	};
+      }
+    }
+    else
+      return this.getopt();
+  }
+      
+  
+  else
+    return this.getopt();
+    
 };
 
 module.exports = parser;
