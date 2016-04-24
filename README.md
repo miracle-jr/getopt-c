@@ -2,7 +2,7 @@ getopt-c
 ============
 
 Overview
------
+1;4002;0c-----
 
 getopt-c implements the posix C getopt() function for Node.getopt() provides a function for parse option.
 
@@ -47,16 +47,16 @@ Test:
 	var parse = new optparse('ab:c:de:', process.argv,
 	    		 		     [
 						{
-			     			name: 'arg',
-			     			has_arg: false,
-			     			val: 'a'
+							name: 'arg',
+			     				has_arg: false,
+			     				val: 'a'
 			   			},
 			   			{
-			     			name: 'brg',
-			     			has_arg: true,
-			     			val: 'b'
+							name: 'brg',
+			     				has_arg: true,
+			     				val: 'b'
 			   			}
-			 			]);
+			 		     ]);
 
 	console.log("optind: " + parse.getoptind());
 	console.log("---------------------------------");
@@ -90,10 +90,11 @@ Test:
 	}
 	console.log("---------------------------------");
 	console.log("optind: " + parse.getoptind() + ", argv[]:" + process.argv[parse.getoptind()]);
+	console.log(parse.getArg());
 
 testOutput:
 
-	$ cmd node test.js --arg --brg btest
+	$ cmd node test2.js --arg --brg btest argument 
 	optind: 2
 	---------------------------------
 	optind: 3, argv[]:--brg
@@ -105,6 +106,7 @@ testOutput:
 
 	---------------------------------
 	optind: 5, argv[]:undefined
+	[ 'argument' ]
 
 
 API
@@ -117,3 +119,11 @@ Returns the next argv-argument index.
 ### `parser.getopt()`
 
 Returns the next argument.
+
+### `parser.getopt_long()`
+
+Add long opt support
+
+### `parser.getArg()`
+
+Return not opt argument

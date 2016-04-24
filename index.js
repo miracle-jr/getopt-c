@@ -1,4 +1,8 @@
-
+/**
+ * parser optarg
+ *
+ * @class parser
+ */
 function parser(optstring, argv, opts) {
   var ii;
   
@@ -8,6 +12,8 @@ function parser(optstring, argv, opts) {
   this.optind = 2;
   this.opterr = 1;
   this.options = {};
+  // create Array to save arg
+  this.argArray = new Array();
 
   this.optArgv = new Array(argv.length);
 
@@ -68,6 +74,7 @@ parser.prototype.getopt = function() {
   var arg = this.optArgv[this.optind];
 
   if ('-' !== arg[0]) {
+    this.argArray.push(arg);
     this.optind++;
     return this.getopt();
   }
@@ -136,6 +143,10 @@ parser.prototype.getopt_long = function() {
   else
     return this.getopt();
     
+};
+
+parser.prototype.getArg = function() {
+  return this.argArray;
 };
 
 module.exports = parser;

@@ -46,3 +46,5 @@ while ((opt = parse.getopt_long()) !== undefined) {
 }
 console.log("---------------------------------");
 console.log("optind: " + parse.getoptind() + ", argv[]:" + process.argv[parse.getoptind()]);
+
+console.log(parse.getArg());
