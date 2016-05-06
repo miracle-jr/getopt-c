@@ -3,11 +3,29 @@
  *
  * @class parser
  */
-function parser(optstring, argv, opts) {
+function parser(argv, optstring,  opts) {
   var ii;
   
   if (!(this instanceof parser))
     return new parser(optstring, argv);
+
+  if (!opts && Array.isArray(optstring)) {
+    opts = optstring;
+    optstring = undefined;
+  }
+
+  optstring = optstring || "";
+  opts = opts || [];
+
+  if (typeof optstring !== 'string') {
+    throw new Error('a optstring is a string');
+  }
+  if (!Array.isArray(opts)) {
+    throw new Error('opts should be a object');
+  }
+  if (!Array.isArray(argv)) {
+    throw new Error('argv should be a array');
+  }
 
   this.optind = 2;
   this.opterr = 1;

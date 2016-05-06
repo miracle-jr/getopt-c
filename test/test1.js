@@ -1,6 +1,6 @@
 var optparse = require('..');
 
-var parse = new optparse('ab:c:de:', process.argv);
+var parse = new optparse(process.argv, 'ab:c:de:');
 
 console.log("optind: " + parse.getoptind());
 console.log("---------------------------------");

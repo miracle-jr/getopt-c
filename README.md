@@ -2,7 +2,7 @@ getopt-c
 ============
 
 Overview
-1;4002;0c-----
+[![NPM version][npm-image][npm-url]]
 
 getopt-c implements the posix C getopt() function for Node.getopt() provides a function for parse option.
 
@@ -15,7 +15,7 @@ Here's how to use:
        var opt_parser = require('getopt-c');
        var parser, opt;
 
-       parser = opt_parser('ab:', process.argv);
+       parser = opt_parser(process.argv, 'ab:');
 
        while ((opt = parser.getopt()) !== undefined) {
        	     switch(opt.option) {
@@ -44,7 +44,7 @@ Test:
 
 	var optparse = require('../index');
 
-	var parse = new optparse('ab:c:de:', process.argv,
+	var parse = new optparse(process.argv, 'ab:c:de:',
 	    		 		     [
 						{
 							name: 'arg',
@@ -107,6 +107,11 @@ testOutput:
 	---------------------------------
 	optind: 5, argv[]:undefined
 	[ 'argument' ]
+	
+	
+New:
+	
+	can use new parser(argv, [{name: '', has_arg: false, val: 'a'}]) instead of new parser(argv, "a")
 
 
 API
