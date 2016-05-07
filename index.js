@@ -7,7 +7,7 @@ function parser(argv, optstring,  opts) {
   var ii;
   
   if (!(this instanceof parser))
-    return new parser(optstring, argv);
+    return new parser(argv, optstring, opts);
 
   if (!opts && Array.isArray(optstring)) {
     opts = optstring;
@@ -30,6 +30,7 @@ function parser(argv, optstring,  opts) {
   this.optind = 2;
   this.opterr = 1;
   this.options = {};
+  this.usage = "";
   // create Array to save arg
   this.argArray = new Array();
 
@@ -43,6 +44,58 @@ function parser(argv, optstring,  opts) {
 
   return this;
 }
+
+parser.prototype.addUsage = function(str) {
+  this.usage = str;
+  return this;
+};
+
+parser.prototype.addOption = function(flag, dest) {
+  if (typeof flag !== 'string' || flag[0] !== '-') {
+    throw new Error('flag should be -[a-z]');
+  }
+  if (typeof dest !== 'string') {
+    throw new Error('dest should be string');
+  }
+
+  if (flag.length > 2) {
+    if (flag[1] !== '-')
+      throw new Error('error flag');
+    this.options[flag.slice(2)] = {
+      has_arg: true,
+      val: flag[2],
+      name: dest
+    };
+  }
+  else if (flag.length > 1) {
+    this.options[flag[1]] = {
+      has_arg: true,
+      val: flag[1],
+      name: dest
+    };
+  }
+  else {
+    throw new Error('not a flag');
+  }
+
+  return this;
+};
+
+parser.prototype.parseArgs = function() {
+  var ret = {};
+  var opt;
+  while ((opt = this.getopt_long()) !== undefined) {
+    if (opt.name && opt.option !== '?') {
+      ret[opt.name] = opt.arg;
+    }
+    else if (opt.arg) {
+      ret[opt.option] = opt.arg;
+    }
+  }
+  ret['args'] = this.getArg();
+  return ret;
+};
+
 
 parser.prototype.parserOptstr = function(optstr, opts) {
   var ii, chr, arg;
@@ -74,7 +127,6 @@ parser.prototype.parserOptstr = function(optstr, opts) {
 	has_arg: opts[j].has_arg,
 	val: opts[j].val
       };
-	
     }
   }
   
@@ -111,22 +163,28 @@ parser.prototype.getopt = function() {
   if (this.options[chr].has_arg) {
     if (arg.length > 2) {
       ar = arg.slice(2);
-      return {
+      var ret = {
 	option: this.options[chr].val,
-	arg: ar
+	arg: ar,
+	name: this.options[chr].name
       };
+//      if (this.options[chr].name)
+//	ret[this.options[chr].name] = ar;
+      return ret;
     }
     else {
       ar = this.optArgv[this.optind++];
       return {
 	option: this.options[chr].val,
-	arg: ar
+	arg: ar,
+	name: this.options[chr].name
       };
     }
   }
   else {
     return {
-      option: this.options[chr].val
+      option: this.options[chr].val,
+      name: this.options[chr].name
     };
   }
 };
@@ -144,12 +202,14 @@ parser.prototype.getopt_long = function() {
       if (this.options[ar].has_arg) {
 	return {
 	  option: this.options[ar].val,
-	  arg: this.optArgv[this.optind++]
+	  arg: this.optArgv[this.optind++],
+	  name: this.options[ar].name
 	};
       }
       else {
 	return {
-	  option: this.options[ar].val
+	  option: this.options[ar].val,
+	  name: this.options[ar].name
 	};
       }
     }

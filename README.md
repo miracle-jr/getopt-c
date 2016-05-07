@@ -11,6 +11,28 @@ Install the npm package in:
 
 	$ npm install getopt-c
 
+
+Add a simple method to use, use parseArgs() method to quite use option:
+
+	var optparse = require('getopt-c');
+
+	var parse = optparse(process.argv).addUsage('usage%prog -f <file> -d <dictionary>').addOption('-f', 'fname').addOption('-d', 'dname');
+
+	var options = parse.parseArgs();
+
+	console.log(parse.usage);
+
+	console.log(options.fname);
+	console.log(options.dname);
+	
+	----------------------------------------
+	$ cmd node test3.js -f evil -d /home
+	usage%prog -f <file> -d <dictionary>
+	evil
+	/home
+
+	
+	
 Here's how to use:
 
        var opt_parser = require('getopt-c');
