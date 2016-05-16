@@ -51,7 +51,7 @@ parser.prototype.addUsage = function(str) {
   return this;
 };
 
-parser.prototype.addOption = function(flag, dest) {
+parser.prototype.addOption = function(flag, dest, harg) {
   if (typeof flag !== 'string' || flag[0] !== '-') {
     throw new Error('flag should be -[a-z]');
   }
@@ -59,18 +59,20 @@ parser.prototype.addOption = function(flag, dest) {
     throw new Error('dest should be string');
   }
 
+  harg = harg || true;
+
   if (flag.length > 2) {
     if (flag[1] !== '-')
       throw new Error('error flag');
     this.options[flag.slice(2)] = {
-      has_arg: true,
+      has_arg: harg,
       val: flag[2],
       name: dest
     };
   }
   else if (flag.length > 1) {
     this.options[flag[1]] = {
-      has_arg: true,
+      has_arg: harg,
       val: flag[1],
       name: dest
     };
@@ -87,10 +89,13 @@ parser.prototype.parseArgs = function() {
   var opt;
   while ((opt = this.getopt_long()) !== undefined) {
     if (opt.name && opt.option !== '?') {
-      ret[opt.name] = opt.arg;
+      ret[opt.name] = opt.arg || true;
     }
     else if (opt.arg) {
       ret[opt.option] = opt.arg;
+    }
+    else {
+      ret[opt.option] = true;
     }
   }
   ret['args'] = this.getArg();
