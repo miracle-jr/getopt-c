@@ -14,6 +14,7 @@ function parser(argv, optstring,  opts) {
     optstring = undefined;
   }
 
+  argv = argv || process.argv;
   optstring = optstring || "";
   opts = opts || [];
 
