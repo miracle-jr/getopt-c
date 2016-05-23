@@ -27,7 +27,7 @@ function parser(argv, optstring,  opts) {
   if (!Array.isArray(argv)) {
     throw new Error('argv should be a array');
   }
-
+  
   this.optind = 2;
   this.opterr = 1;
   this.options = {};
@@ -51,7 +51,7 @@ parser.prototype.addUsage = function(str) {
   return this;
 };
 
-parser.prototype.addOption = function(flag, dest, harg) {
+parser.prototype.addOption = function(flag, dest, harg, help) {
   if (typeof flag !== 'string' || flag[0] !== '-') {
     throw new Error('flag should be -[a-z]');
   }
@@ -60,6 +60,7 @@ parser.prototype.addOption = function(flag, dest, harg) {
   }
 
   harg = harg || true;
+  help = help || "";
 
   if (flag.length > 2) {
     if (flag[1] !== '-')
