@@ -3,7 +3,7 @@ getopt-c
 
 Overview
 
-[![NPM version][npm-image]][npm-url]
+[![NPM version](https://im.shields.io/npm/v/getopt-c.svg)](https://www.npmjs.com/package/getopt-c)
 
 getopt-c implements the posix C getopt() function for Node.getopt() provides a function for parse option.
 
@@ -16,12 +16,11 @@ Add a simple method to use, use parseArgs() method to quite use option:
 
 	var optparse = require('getopt-c');
 
-	var parse = optparse(process.argv).addUsage('usage%prog -f <file> -d <dictionary>').addOption('-f', 'fname').addOption('-d', 'dname');
+	var parse = optparse().addUsage('test').addOption('-f', 'fname').addOption('-d', 'dname');
 
 	var options = parse.parseArgs();
 
-	console.log(parse.usage);
-
+	
 	console.log(options.fname);
 	console.log(options.dname);
 	
@@ -30,7 +29,16 @@ Add a simple method to use, use parseArgs() method to quite use option:
 	usage%prog -f <file> -d <dictionary>
 	evil
 	/home
-
+	
+	$ cmd node test3.js --help
+	usage: node [programe name] [OPTIONS]
+	
+	test
+	
+	options:
+	  --help HELP Show this message and exit.
+	   -f FNAME   file name.
+	   -d DNAME   dir name.
 	
 	
 Here's how to use:
@@ -155,3 +163,11 @@ Add long opt support
 ### `parser.getArg()`
 
 Return not opt argument
+
+### `parser.addOption(opt, dist, hasArg, help)`
+
+Add option
+
+### `parser.parseArgs()`
+
+parser option and return result
