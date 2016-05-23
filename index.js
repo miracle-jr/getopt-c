@@ -41,6 +41,8 @@ function parser(argv, optstring,  opts) {
     this.optArgv[ii] = argv[ii];
   }
 
+  this.addOption("--help", "help", false, 'Show this message and exit.');
+
   this.parserOptstr(optstring, opts);
 
   return this;
@@ -58,8 +60,8 @@ parser.prototype.addOption = function(flag, dest, harg, help) {
   if (typeof dest !== 'string') {
     throw new Error('dest should be string');
   }
-
-  harg = harg || true;
+  if (harg === undefined)
+    harg = true;
   help = help || "";
 
   if (flag.length > 2) {
@@ -68,14 +70,16 @@ parser.prototype.addOption = function(flag, dest, harg, help) {
     this.options[flag.slice(2)] = {
       has_arg: harg,
       val: flag[2],
-      name: dest
+      name: dest,
+      help: help
     };
   }
   else if (flag.length > 1) {
     this.options[flag[1]] = {
       has_arg: harg,
       val: flag[1],
-      name: dest
+      name: dest,
+      help: help
     };
   }
   else {
@@ -83,6 +87,25 @@ parser.prototype.addOption = function(flag, dest, harg, help) {
   }
 
   return this;
+};
+
+parser.prototype.help = function() {
+  console.log("Usage: node [programe name] [OPTIONS]");
+  console.log("");
+  console.log(this.usage || "");
+  console.log("");
+  console.log("Options:");
+  for(var i in this.options) {
+
+    if (i.length > 1) {
+
+      console.log('  --' + i + " " + this.options[i].name.toUpperCase() + '\t' + this.options[i].help);
+
+    }
+    else {
+      console.log("   -" + i + " " + this.options[i].name.toUpperCase() + "\t" + this.options[i].help);
+    }
+  }
 };
 
 parser.prototype.parseArgs = function() {
@@ -97,6 +120,10 @@ parser.prototype.parseArgs = function() {
     }
     else {
       ret[opt.option] = true;
+    }
+    if (opt.name === "help") {
+      this.help();
+      process.exit(0);
     }
   }
   ret['args'] = this.getArg();
@@ -173,7 +200,8 @@ parser.prototype.getopt = function() {
       var ret = {
 	option: this.options[chr].val,
 	arg: ar,
-	name: this.options[chr].name
+	name: this.options[chr].name,
+	help: this.options[chr].help
       };
 //      if (this.options[chr].name)
 //	ret[this.options[chr].name] = ar;
@@ -184,14 +212,16 @@ parser.prototype.getopt = function() {
       return {
 	option: this.options[chr].val,
 	arg: ar,
-	name: this.options[chr].name
+	name: this.options[chr].name,
+	help: this.options[chr].help
       };
     }
   }
   else {
     return {
       option: this.options[chr].val,
-      name: this.options[chr].name
+      name: this.options[chr].name,
+      help: this.options[chr].help
     };
   }
 };
@@ -210,13 +240,15 @@ parser.prototype.getopt_long = function() {
 	return {
 	  option: this.options[ar].val,
 	  arg: this.optArgv[this.optind++],
-	  name: this.options[ar].name
+	  name: this.options[ar].name,
+	  help: this.options[ar].help
 	};
       }
       else {
 	return {
 	  option: this.options[ar].val,
-	  name: this.options[ar].name
+	  name: this.options[ar].name,
+	  help: this.options[ar].help
 	};
       }
     }
